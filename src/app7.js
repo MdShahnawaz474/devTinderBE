@@ -11,7 +11,7 @@ app.post("/signup",async(req,res)=>{
         email:"Ahankhan@gmail.com",
         age:20,
         password:"Ahaankhan@3493",    
-    }
+    }  
     // Creating a new Instance of the User Model
     try {
         const user = new User(userObj)
