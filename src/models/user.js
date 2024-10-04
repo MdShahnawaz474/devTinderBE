@@ -1,6 +1,6 @@
 
 const mongoose = require('mongoose');
-
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -16,10 +16,21 @@ const userSchema = new mongoose.Schema({
         lowercase:true,
         required:true,
         unique:true,
-        trim:true
+        trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid email adress"+ value);
+            }
+        }
     },
     password: {
         type: String,
+        required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Your password is not strong"+value);
+            }
+        }
     },
     age:{
         type:'Number',
@@ -35,14 +46,25 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://pinnacle.works/wp-content/uploads/2022/06/dummy-image.jpg"
+        default:"https://pinnacle.works/wp-content/uploads/2022/06/dummy-image.jpg",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Invalid photo url" + value);
+            } 
+        }
     },
     about:{
         type:String,
         default:"This is default value of the user"
     },
     skills:{
-        type:[String]
+        type:[String],
+    validate(skills){
+        if(skills.length ===10){
+            throw new Error("You can not add above 4 skilss")
+        }
+    }
+        
     }
 },{
     timestamps:true, 
