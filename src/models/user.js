@@ -5,10 +5,16 @@ const validator = require("validator");
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required:true
+        required:true,
+        minlength:[3,'First name must be at least 3 characters long.'],
+        maxlength:[50,'First name cannot exceed 50 characters.'],
+        
+        
     },
     lastName :{
         type: String,
+        minlength:[3, 'Last name must be at least 3 characters long.'],
+        maxlength:[50,'Last name cannot exceed 50 characters.'],
 
     },
     emailId:{
@@ -31,7 +37,7 @@ const userSchema = new mongoose.Schema({
                 throw new Error("Your password is not strong"+value);
             }
         }
-    },
+    }, 
     age:{
         type:'Number',
         min:18
