@@ -7,6 +7,7 @@ const {validateSignUpData}= require("./utils/validation")
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {userAuth} = require("./middleware/auth")
 //Uses
 app.use(express.json());
 app.use(cookieParser());
@@ -71,25 +72,11 @@ app.post("/login", async (req, res) => {
 });
 
 
-app.post("/profile",async(req,res)=>{
-  try{const cookies = req.cookies
-  
-  const {token}= cookies;
-
-  if(!token){
-    throw new Error("Invalid token");
-  }
-  
-  const decodeMessage =  jwt.verify(token,"DEVTINDER@$474");
-
-  const {_id} = decodeMessage;
-
-  const user = await User.findById(_id);
-  if(!user){
-    throw new Error("User does not exist")
-    
-  }
-  res.send(user); }catch(error){
+app.post("/profile",userAuth, async(req,res)=>{
+  try{
+    const user = req.user
+  res.send(user); }
+  catch(error){
     res.status(500).send("Error: " + error.message);
   }
 })
@@ -215,6 +202,9 @@ app.patch("/feed", async (req, res) => {
 app.put("/feed", (req, res) => {
   const userIdfeed = req.body.userId;
 });
+
+
+
 
 connectDb()
   .then(() => {
