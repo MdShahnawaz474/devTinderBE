@@ -54,15 +54,15 @@ app.post("/login", async (req, res) => {
     }
 
     // Compare the password with the hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = user.passwordValidator(password)
     
     if (isPasswordValid) {
-      // Generate JWT token
-      const token = await jwt.sign({ _id: user._id }, "DEVTINDER@$474");
-      console.log(token);
       
-      // Set the token in a cookie (uncomment if needed)
-      res.cookie("token",token );
+        const token = await user.getJWT();
+      // Set the token in a cookie 
+      res.cookie("token",token ,{
+        expires: new Date(Date.now()+8*3600000),
+      }); 
       
       return res.send("Login successful");
     } else {
