@@ -21,7 +21,10 @@ const requestRouter = require("./routes/request")
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
+
+
 connectDb()
+
   .then(() => {
     console.log("Database connection established");
     app.listen(port, () => {
