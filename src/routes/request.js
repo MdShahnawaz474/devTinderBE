@@ -2,7 +2,8 @@
 const express = require("express");
 const { userAuth } = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequests");
-
+const User = require("../models/user");
+const { scheduler } = require("timers/promises");
 const requestRouter = express.Router();
 
 requestRouter.post("/request/send/:status/:toUserId",userAuth, async(req,res)=>{
@@ -15,6 +16,18 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async(req,res)=>{
         
         if(!allowedStatus.includes(status)){
           return  res.status(400).json({message:"Invalid Status type"+ status});
+        }
+
+        if(fromUserId==toUserId){
+           return res.status(400).json({message:"Invalid request"})
+        }
+
+        const toUser = await User.findById(toUserId);
+
+        if(!toUser){
+            return res.status(404).json({
+                message:"User not found"
+            })
         }
 
         // If there is an exisiting connection request:-
@@ -53,3 +66,22 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async(req,res)=>{
 })
 
 module.exports= requestRouter;
+
+
+
+// express
+// request routes
+// tryCatch
+// fetching fromuser id
+// status
+
+// Allowedstatus
+// allowed Conditional status
+// selfConditional status
+// find TO user 
+// not found user conditions
+// existing user COnnection
+// existing user conditions
+// connect data 
+
+// Connection data save
