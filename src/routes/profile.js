@@ -10,7 +10,20 @@ const profileRouter = express.Router();
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = await req.user;
-    res.send(user);
+      const safeUser = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailId:user.emailId,
+      age:user.age,
+      gender:user.gender,
+      photoUrl: user.photoUrl,
+      about: user.about,
+      skills: user.skills,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
+    res.send(safeUser);
   } catch (error) {
     res.status(400).send("Error" + error.message);
   }
@@ -26,15 +39,21 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
     Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
     
-  const userSave =  await loggedInUser.save();
+   await loggedInUser.save();
 
-    console.log(userSave);
+    // console.log(userSave);
     
-    res.json({
-        message: `${loggedInUser.firstName},Your profile updated Succefull`, data:loggedInUser});
-
+     return res.status(200).json({
+      success: true,
+      message: `${loggedInUser.firstName}, your profile was updated successfully.`,
+      data: loggedInUser,
+    });
   } catch (error) {
-    res.status(400).send("Error" + error.message);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while updating your profile.",
+      error: error.message,
+    });
   }
 });
 
