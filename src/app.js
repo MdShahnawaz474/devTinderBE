@@ -1,48 +1,42 @@
-const express = require("express");
-const app = express();
-const port = 3000;
+const express = require("express")
+const app =express();
+const port = 8000;
+const cookieParser = require("cookie-parser");
+const connectDb = require("./config/database");
+const cors = require("cors");
+// const express = require("express");
+//Uses
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Use your frontend origin here
+  credentials: true               // Allow credentials (cookies, auth headers)
+}));
+app.use(express.json());
+app.use(cookieParser());
+
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request")
+const userRouter = require("./routes/user");
+
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
 app.get("/",(req,res)=>{
-    res.send("<h1>Hello from the server</h1>");
-});
-
-
-// app.get('/hello', function(req, res){
-//     res.send("<h1>Welcome</h1>");
-// });
-
-// // app.use("/user",(req,res)=>{
-// //     res.send("HAHAHAHHAHAH")
-// // });
-
-// app.get("/user", (req,res)=>{
-//     res.send({
-//         "firName":"MD ",
-//         "lastName":"Shahnawaz",
-//         "Age":"20"
-//     })
-// })
-
-// app.post("/user",(req,res)=>{
-//     console.log("Save data to the server");
-//     res.send("Data successfully saved")
-// })
-
-
-
-// app.delete("/user",(req,res)=>{
-//     console.log("Data is deleted successfully");
-//     res.send("Data deleted successfully");
-// });
-
-app.get("/ab?c",(req,res)=>{
-    res.send({
-        "name":"MD shahnawaz",
-        "age":"20"
-    })
+  res.send("Hi this is devtinder")
 })
 
-app.listen(port,()=>{
-    console.log("listening on port",port);
-    
-});
+
+connectDb()
+
+  .then(() => {
+    console.log("Database connection established");
+    app.listen(port, () => {
+      console.log(`App listening on ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log("Database connection Error: ", err);
+  });
