@@ -14,6 +14,7 @@ userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
     }).populate("fromUserId", USERSAFEDATA);
 
     //populate("fromUserId", ["firstName", "lastName"]);
+console.log(connectionRequest);
 
     res.json({
       message: "Data fetched successfully",

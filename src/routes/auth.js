@@ -6,29 +6,72 @@ const jwt = require("jsonwebtoken");
 
 const authRouter = express.Router();
 
+// authRouter.post("/signup", async (req, res) => {
+//   try {
+//     validateSignUpData(req);
+
+//     const { firstName, lastName, emailId, password } = req.body;
+
+//     const passwordHash = await bcrypt.hash(password, 10);
+//     // console.log(passwordHash);
+
+//     const user = new User({
+//       firstName,
+//       lastName,
+//       emailId,
+//       password: passwordHash,
+//     });
+
+//     await user.save();
+//     res.send("User addded succefully");
+//   } catch (err) {
+//     res.status(400).send("error" + err.message);
+//   }
+// });
+
+
 authRouter.post("/signup", async (req, res) => {
   try {
     validateSignUpData(req);
 
-    const { firstName, lastName, emailId, password } = req.body;
+    const {
+      firstName,
+      lastName,
+      emailId,
+      password,
+      age,
+      gender,
+      photoUrl,
+      about,
+    } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ emailId });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "Email already registered" });
+    }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    // console.log(passwordHash);
 
     const user = new User({
       firstName,
       lastName,
       emailId,
       password: passwordHash,
+      age,
+      gender,
+      photoUrl,
+      about,
     });
+      // skills,
 
     await user.save();
-    res.send("User addded succefully");
+    
+    res.status(201).json({ success: true, message: "User added successfully" });
   } catch (err) {
-    res.status(400).send("error" + err.message);
+    res.status(400).json({ success: false, message: err.message });
   }
 });
-
 authRouter.post("/login", async (req, res) => {
   try {
     // Destructure emailId and password from request body

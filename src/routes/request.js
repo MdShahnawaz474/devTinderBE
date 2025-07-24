@@ -3,6 +3,8 @@ const { userAuth } = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequests");
 const User = require("../models/user");
 const { scheduler } = require("timers/promises");
+const { sendConnectionRequestEmail, sendConnectionStatusEmail } = require("./emailService");
+// const sendEmail = require("../utils/SendEmail");
 const requestRouter = express.Router();
 
 requestRouter.post(
@@ -62,6 +64,21 @@ requestRouter.post(
       });
 
       const connectionData = await connectionRequest.save();
+         connectionRequest.status = status;
+      // const data = await connectionRequest.save();
+     
+       if (status === "interested") {
+        try {
+          const emailResult = await sendConnectionRequestEmail(toUser, req.user);
+          // console.log('Email notification result:', emailResult);
+        } catch (emailError) {
+          console.error('Failed to send email notification:', emailError);
+          // Don't fail the request if email fails - just log it
+        }
+      }
+      //  const emailres =await sendEmail.run();
+      // console.log("aws email"+emailres);
+      
 
       res.json({
         message: `Connection request send succefully!! ${req.user.firstName} is ${status} in ${toUser.firstName}  `,
@@ -102,8 +119,20 @@ requestRouter.post(
         });
       }
 
-      connectionRequest.status = status;
-      const data = await connectionRequest.save();
+   
+
+      try {
+        const emailResult = await sendConnectionStatusEmail(
+          loggedInUser, 
+          connectionRequest.fromUserId, 
+          status
+        );
+        console.log('Status update email result:', emailResult);
+      } catch (emailError) {
+        console.error('Failed to send status update email:', emailError);
+        // Don't fail the request if email fails - just log it
+      }
+
       res.json({ message: "Connection request" + " " + status, data });
     } catch (error) {
       res.status(400).send("Error:" + error.message);

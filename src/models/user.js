@@ -69,6 +69,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:"This is default value of the user"
     },
+    
     skills:{
         type:[String],
     validate(skills){
