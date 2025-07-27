@@ -85,7 +85,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
     //     paymentId: savedPayment._id // Return the saved payment ID
     // });
 
-    res.json({ ...savedPayment.toJSON(), keyId: process.env.key_id });
+    res.json({ ...savedPayment.toJSON(), keyId: process.env.RAZORPAY_KEY_ID });
     //     res.status(201).json({
     //     success: true,
     //     message: "Payment order created successfully",
