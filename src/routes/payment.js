@@ -8,6 +8,7 @@ const {
   validateWebhookSignature,
 } = require("razorpay/dist/utils/razorpay-utils.js");
 const User = require("../models/user.js");
+
 paymentRouter.post("/payment/create", userAuth, async (req, res) => {
   const receiptId = `receipt_${Date.now()}_${Math.random()
     .toString(36)
@@ -51,7 +52,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
         firstName,
         lastName,
         emailId,
-        membershipTypes: membershipTypes,
+        membershipType: membershipTypes,
         timestamp: new Date().toISOString(),
       },
     });
@@ -70,6 +71,8 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
     });
 
     const savedPayment = await payment.save();
+    console.log(savedPayment);
+    
     // Optionally, you can return the saved payment details
     // res.status(201).json({
     //     success: true,
@@ -148,10 +151,10 @@ paymentRouter.post("/payments/webhook", async (req, res) => {
 
     await payment.save();
 
-    const user = await User.findOne({_id: payment.userId});
+    const user = await User.findOne({ _id: payment.userId });
 
     user.isPremium = true;
-    user.membershipTypes=payment.notes.membershipType;
+    user.membershipTypes = payment.notes.membershipType;
     // if (req.body.event === "payment.captured") {
     // }
 

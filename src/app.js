@@ -18,6 +18,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request")
@@ -35,6 +36,10 @@ app.use("/", paymentRouter);
 app.get("/",(req,res)=>{
   res.send("Hi this is devtinder")
 })
+
+// console.log( process.env.RAZORPAY_KEY_ID);
+// console.log( process.env.RAZORPAY_KEY_SECRET);
+
 
 
 connectDb()
