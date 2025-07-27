@@ -4,7 +4,8 @@ const ConnectionRequest = require("../models/connectionRequests");
 const User = require("../models/user");
 const userRouter = express.Router();
 
-const USERSAFEDATA = "firstName lastName photoUrl about skills age gender";
+const USERSAFEDATA =
+  "firstName lastName emailId photoUrl about skills age gender ";
 userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -14,7 +15,7 @@ userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
     }).populate("fromUserId", USERSAFEDATA);
 
     //populate("fromUserId", ["firstName", "lastName"]);
-console.log(connectionRequest);
+    console.log(connectionRequest);
 
     res.json({
       message: "Data fetched successfully",
@@ -43,9 +44,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       }
       return row.fromUserId;
     });
-    res.json({message:"success",
-      data:data
-    });
+    res.json({ message: "success", data: data });
   } catch (error) {
     res.status(400).send({ message: `Error ${error.message}` });
   }
@@ -54,10 +53,10 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 userRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
-    const page = parseInt(req.query.page)||1;
-    let limit = parseInt(req.query.limit)||10;
-    limit = limit >50? 50 : limit;
-    const skip = (page-1)*limit;
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
     const connectionRequest = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     }).select("fromUserId toUserId");
@@ -74,11 +73,14 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     const users = await User.find({
       $and: [
         { _id: { $nin: Array.from(hideUsersFromFeed) } },
-        { _id: { $ne: loggedInUser._id } }
-      ]
-    }).select(USERSAFEDATA).skip(skip).limit(limit);
-    
-    res.json({data:users});
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    })
+      .select(USERSAFEDATA)
+      .skip(skip)
+      .limit(limit);
+
+    res.json({ data: users });
   } catch (error) {
     res.status(400).send({ message: `Error: ${error.message}` });
   }

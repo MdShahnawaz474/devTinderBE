@@ -42,7 +42,7 @@ const paymentSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      membershipTypes: {
+      membershipType: {
         type: String,
         required: true,
       },

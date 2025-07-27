@@ -21,7 +21,7 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
         /* required */
         Html: {
           Charset: "UTF-8",
-          Data: "<h1>this is a email body of dev tinder<h1/>"
+          Data: "<h1>this is a email body of dev tinder</h1>"
         },
         Text: {
           Charset: "UTF-8",

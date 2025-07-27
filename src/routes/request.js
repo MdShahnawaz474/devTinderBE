@@ -70,7 +70,7 @@ requestRouter.post(
        if (status === "interested") {
         try {
           const emailResult = await sendConnectionRequestEmail(toUser, req.user);
-          // console.log('Email notification result:', emailResult);
+          console.log('Email notification result:', emailResult);
         } catch (emailError) {
           console.error('Failed to send email notification:', emailError);
           // Don't fail the request if email fails - just log it
@@ -119,12 +119,33 @@ requestRouter.post(
         });
       }
 
-   
+        connectionRequest.status = status;
+              const data = await connectionRequest.save();
 
+                    const fromUser = await User.findById(connectionRequest.fromUserId);
+
+                      if (!fromUser) {
+        console.error('FromUser not found:', connectionRequest.fromUserId);
+        return res.status(404).json({
+          message: "Original requester not found",
+        });
+      }
+
+       console.log('FromUser object:', {
+        id: fromUser._id,
+        firstName: fromUser.firstName,
+        emailId: fromUser.emailId
+      });
+
+        console.log('LoggedInUser object:', {
+        id: loggedInUser._id,
+        firstName: loggedInUser.firstName,
+        emailId: loggedInUser.emailId
+      });
       try {
         const emailResult = await sendConnectionStatusEmail(
           loggedInUser, 
-          connectionRequest.fromUserId, 
+         fromUser, 
           status
         );
         console.log('Status update email result:', emailResult);
