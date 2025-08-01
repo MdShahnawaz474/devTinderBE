@@ -56,6 +56,8 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       },
     });
 
+    
+
     const notesObj = {
   firstName: req.user.firstName,
   lastName: req.user.lastName,
