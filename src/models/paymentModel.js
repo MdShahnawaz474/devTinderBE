@@ -34,9 +34,11 @@ const paymentSchema = new mongoose.Schema(
       required: true,
     },
     notes: {
-      userId: {
+     firstName: {
         type: String,
-        
+      },
+      lastName: {
+        type: String,
       },
       timestamp: {
         type: String,

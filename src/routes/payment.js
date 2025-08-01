@@ -10,7 +10,7 @@ const {
 const User = require("../models/user.js");
 
 paymentRouter.post("/payment/create", userAuth, async (req, res) => {
-  const receiptId = `receipt_${Date.now()}_${Math.random()
+  const receiptId = `DevTinder_${Date.now()}_${Math.random()
     .toString(36)
     .substr(2, 9)}`;
   const { membershipTypes } = req.body;
@@ -47,7 +47,6 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       amount: amount * 100, // Convert to paise
       currency: "INR",
       receipt: receiptId,
-
       notes: {
         firstName,
         lastName,
@@ -57,7 +56,13 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       },
     });
 
-    console.log(order);
+    const notesObj = {
+  firstName: req.user.firstName,
+  lastName: req.user.lastName,
+  timestamp: new Date().toISOString(),
+  membershipType: membershipTypes,
+};
+    // console.log(order);
 
     const payment = new Payment({
       userId: req.user._id,
@@ -67,11 +72,11 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       amount: order.amount,
       currency: order.currency,
       receipt: order.receipt,
-      notes: order.notes,
+      notes: notesObj
     });
 
     const savedPayment = await payment.save();
-    console.log(savedPayment);
+    // console.log(savedPayment);
     
     // Optionally, you can return the saved payment details
     // res.status(201).json({
