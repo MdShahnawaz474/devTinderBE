@@ -48,6 +48,13 @@ const userSchema = new mongoose.Schema(
         message: `{VALUE} is incorrect`,
       },
 
+      //  validate(value){
+      //     if(!["male","female","others"].includes(value)){
+      //         throw new Error("Gender data is not valid")
+      //     }
+      //  }
+    },
+    
       isPremium: {
         type: Boolean,
         default: false,
@@ -57,13 +64,7 @@ const userSchema = new mongoose.Schema(
       },
       membershipValidity:{
         type:Number
-      } 
-      //  validate(value){
-      //     if(!["male","female","others"].includes(value)){
-      //         throw new Error("Gender data is not valid")
-      //     }
-      //  }
-    },
+      } ,
     photoUrl: {
       type: String,
       default:
